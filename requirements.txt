@@ -1,0 +1,5 @@
+Flask >= 0.10.1
+Flask-SQLAlchemy >=2.0
+SQLAlchemy >= 1.0.8
+
+psycopg2 >= 2.6.1
