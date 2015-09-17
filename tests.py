@@ -19,6 +19,7 @@ class BaseTestCase(unittest.TestCase):
     def tearDownClass(cls):
         db.session.remove()
         db.drop_all()
+        TestingConfig.drop_test_db()
 
     def setUp(self):
         db.session.begin(subtransactions=True)
@@ -26,7 +27,6 @@ class BaseTestCase(unittest.TestCase):
     def tearDown(self):
         db.session.rollback()
         db.session.close()
-        TestingConfig.drop_test_db()
 
 
 class UserTestCase(BaseTestCase):
@@ -36,6 +36,15 @@ class UserTestCase(BaseTestCase):
 
     def test_with_user_creation(self):
         u = User(first_name="john", last_name="doe", email="john@example.com",
+                 password="letmein")
+        db.session.add(u)
+        db.session.commit()
+        response = self.client.get('/')
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_with_other_user_creation(self):
+        u = User(first_name="jimmy", last_name="fallon", email="jf@example.com",
                  password="letmein")
         db.session.add(u)
         db.session.commit()
